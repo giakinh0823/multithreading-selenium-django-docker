@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <h1>Crawl data</h1>
+    <button id="getdata" onClick="getDataAjax()">Get data</button>
+    <script>
+        const getDataAjax = () => {
+            $.ajax({
+                type: "GET", 
+                url: 'crawl/',  
+                data: '',
+                dataType: 'json', 
+                success: function () {
+                }
+            });
+        }
+
+        const getData = async () => {
+            let room = (Math.random() + 1).toString(36).substring(6)
+            const getdata = `ws://127.0.0.1:8000/ws/getData/${room}/`
+            const socketGetdata = await new WebSocket(getdata)
+
+            socketGetdata.onopen = function (e) {
+                console.log("open", e);
+            }
+
+            socketGetdata.onmessage = function (e) {
+                console.log("message", e)
+                const data = JSON.parse(e.data);
+                console.log(data)
+            }
+            socketGetdata.onerror = function (e) {
+                console.log("error", e)
+            }
+            socketGetdata.onclose = function (e) {
+                console.log("close", e)
+            }
+
+            setTimeout(() => {
+                socketGetdata.send(JSON.stringify({
+                    getdata: "Start"
+                }))
+            }, 5000)
+        }
+
+    </script>
+
+</body>
+
+</html>
