@@ -1,7 +1,7 @@
 FROM python:3
 ENV PYTHONUNBUFFERED=1
-WORKDIR /Scholar
-COPY requirements.txt /Scholar/
+WORKDIR /cralThread
+COPY requirements.txt /cralThread/
 RUN apt-get update \
     && apt-get -y install libpq-dev gcc
 RUN pip install -r requirements.txt

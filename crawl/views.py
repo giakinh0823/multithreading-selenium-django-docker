@@ -16,10 +16,11 @@ def crawl(request):
 
 def getDataAjax(request):
     if request.is_ajax():
-        pool=Pool(10)
-        pool.map_async(data_scrap,(1,2,3,4,5,6,7))
-        pool.close()
-        pool.join()
+        # pool=Pool(10)
+        # pool.map_async(data_scrap,(1,2,3,4,5,6,7))
+        # pool.close()
+        # pool.join()
+        data_scrap(1)
 
 def getData(request):
     task = threading.Thread(target=getDataAjax,args=[request])
