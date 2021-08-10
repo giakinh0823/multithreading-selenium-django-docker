@@ -4,13 +4,10 @@ from celery import shared_task
 from .models import *
 from cralThread.celery import app
 
-@app.task
+@app.task( max_retries=3)
 def getDataCelery():
     from .getData import data_scrap
-    import threading
-    thread = threading.Thread(name='getdata',target=data_scrap)
-    thread.daemon = True
-    thread.start()
+    data_scrap()
 
 @shared_task
 def getProduct(request):
@@ -26,7 +23,4 @@ def saveProduct(name):
 def deleteProduct(request):
     Product.objects.all().delete()
      
-@app.task
-def add(x, y):
-    return x + y
 

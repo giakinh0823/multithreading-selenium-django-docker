@@ -54,3 +54,5 @@ vine==5.0.0
 wcwidth==0.2.5
 webdriver-manager==3.4.2
 zope.interface==5.4.0
+channels-redis==3.3.0
+

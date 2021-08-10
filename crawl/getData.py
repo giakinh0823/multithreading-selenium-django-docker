@@ -7,7 +7,6 @@ from bs4 import SoupStrainer
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from .models import Product
-import threading
 from  .taks import *
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
