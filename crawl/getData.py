@@ -22,7 +22,6 @@ def data_scrap():
     list_product = BeautifulSoup(htmlSource, "html.parser", parse_only=only_class)
     for item in list_product.findAll("h3", {"class": "wb-break-all"}):
         name = str(item.find("a", attrs={"itemprop": "name codeRepository"}).text)
-        print(name)
         async_to_sync(channel_layer.group_send)(
             'product',
             {
@@ -30,7 +29,7 @@ def data_scrap():
                 'product': name,
             }
         )
-        saveProduct(name)
+        saveProduct.delay(name)
         time.sleep(2)
     driver.quit()
 

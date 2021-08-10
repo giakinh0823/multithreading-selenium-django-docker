@@ -16,16 +16,13 @@ def getDataAjax(request):
         data_scrap()
 
 def getData(request):
-    if(threading.activeCount()<13):
-        thread = threading.Thread(target=getDataAjax,args=[request])
-        thread.daemon = True
-        thread.start()
-        thread.join()
-        return JsonResponse({"Trạng thái": "Thành công! Loading"})
-    return JsonResponse({"Trạng thái": "Lỗi! Phải đợi để tiếp tục"})
+    thread = threading.Thread(target=getDataAjax,args=[request])
+    thread.daemon = True
+    thread.start()
+    thread.join()
 
 def delete(request):
-    deleteProduct(request)
+    deleteProduct.delay()
     return JsonResponse({})
 
 def celery(request):

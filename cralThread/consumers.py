@@ -21,9 +21,7 @@ class ProductsConsumer(AsyncWebsocketConsumer):
         data_scrap()
 
     async def receive(self, text_data): 
-        thread = threading.Thread(name='getdata',target=self.getDataAjax, args=[1])
-        thread.daemon = True
-        thread.start()
+        pass
     
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard("product", self.channel_name)
