@@ -2,14 +2,17 @@ import time
 from selenium import webdriver
 from .models import *
 # Import packages
-import pandas as pd
 from selenium import webdriver  
 from bs4 import SoupStrainer
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from .models import Product
+import threading
+from  .taks import *
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
-
-def data_scrap(number):
+def data_scrap():
     driver = webdriver.Remote("http://selenium-hub:4444/wd/hub", DesiredCapabilities.FIREFOX)
     driver.get("https://github.com/giakinh0823?tab=repositories")
     time.sleep(2)
@@ -19,5 +22,18 @@ def data_scrap(number):
     for item in list_product.findAll("h3", {"class": "wb-break-all"}):
         name = str(item.find("a", attrs={"itemprop": "name codeRepository"}).text)
         print(name)
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            'product',
+            {
+                'type': 'send_data_products',
+                'product': name,
+            }
+        )
+        thread = threading.Thread(target=saveProduct, args=[name])
+        thread.daemon=True
+        thread.start()
         time.sleep(3)
     driver.quit()
+
+

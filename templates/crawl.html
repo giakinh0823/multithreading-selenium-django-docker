@@ -11,45 +11,76 @@
 
 <body>
     <h1>Crawl data</h1>
-    <button id="getdata" onClick="getDataAjax()">Get data</button>
+    <button id="getdata" onClick="getData()">Get data</button>
+    <button id="delete" onClick="deleteData()">Delete Data</button>
+    <button id="celery" onClick="celery()">celery</button>
+    <ul id="list_product">
+       {% for product in products %}
+            <li>{{product.name}}</li>
+       {% endfor %}
+    </ul>
     <script>
         const getDataAjax = () => {
             $.ajax({
-                type: "GET", 
-                url: 'crawl/',  
+                type: "GET",
+                url: 'crawl/',
                 data: '',
-                dataType: 'json', 
-                success: function () {
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data)
                 }
             });
         }
 
-        const getData = async () => {
-            let room = (Math.random() + 1).toString(36).substring(6)
-            const getdata = `ws://127.0.0.1:8000/ws/getData/${room}/`
-            const socketGetdata = await new WebSocket(getdata)
+        const deleteData = () => {
+            $.ajax({
+                type: "GET",
+                url: 'delete/',
+                data: '',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data)
+                    document.getElementById("list_product").innerHTML = ""
+                }
+            });
+        }
 
-            socketGetdata.onopen = function (e) {
-                console.log("open", e);
-            }
+        const celery = () => {
+            $.ajax({
+                type: "GET",
+                url: 'celery/',
+                data: '',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data)
+                }
+            });
+        }
 
-            socketGetdata.onmessage = function (e) {
-                console.log("message", e)
-                const data = JSON.parse(e.data);
-                console.log(data)
-            }
-            socketGetdata.onerror = function (e) {
-                console.log("error", e)
-            }
-            socketGetdata.onclose = function (e) {
-                console.log("close", e)
-            }
+        const getdata = `ws://127.0.0.1:8000/ws/getData/`
+        const socketGetdata = new WebSocket(getdata)
 
-            setTimeout(() => {
-                socketGetdata.send(JSON.stringify({
-                    getdata: "Start"
-                }))
-            }, 5000)
+        socketGetdata.onopen = function (e) {
+            console.log("open", e);
+        }
+
+        socketGetdata.onmessage = function (e) {
+            console.log("message", e)
+            const data = JSON.parse(e.data);
+            document.getElementById("list_product").innerHTML += ` <li>${data.product}</li>`
+            console.log(data)
+        }
+        socketGetdata.onerror = function (e) {
+            console.log("error", e)
+        }
+        socketGetdata.onclose = function (e) {
+            console.log("close", e)
+        }
+
+        const getData = () => {
+            socketGetdata.send(JSON.stringify({
+                getdata: "Start"
+            }))
         }
 
     </script>
