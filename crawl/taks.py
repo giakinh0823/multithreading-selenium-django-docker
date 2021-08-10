@@ -1,17 +1,16 @@
-# ce/taks.py
-# Create your tasks here
+from __future__ import absolute_import
+
 from celery import shared_task
 from .models import *
-from cralThread.celery import *
+from cralThread.celery import app
 
 @app.task
-def getDataCelery(request):
+def getDataCelery():
     from .getData import data_scrap
     import threading
     thread = threading.Thread(name='getdata',target=data_scrap)
     thread.daemon = True
-    thread.start()    
-    return True
+    thread.start()
 
 @shared_task
 def getProduct(request):
@@ -27,4 +26,7 @@ def saveProduct(name):
 def deleteProduct(request):
     Product.objects.all().delete()
      
+@app.task
+def add(x, y):
+    return x + y
 

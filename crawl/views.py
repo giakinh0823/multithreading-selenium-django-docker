@@ -4,8 +4,8 @@ from .models import *
 from .getData import *
 from django.shortcuts import render
 import threading
-import asyncio
 from .taks import *
+
 
 def crawl(request):
     products = getProduct(request)
@@ -29,7 +29,7 @@ def delete(request):
     return JsonResponse({})
 
 def celery(request):
-    getDataCelery(request)
+    getDataCelery.delay()
     return JsonResponse({})
 
 

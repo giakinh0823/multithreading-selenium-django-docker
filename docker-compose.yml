@@ -16,8 +16,14 @@ services:
       - .:/cralThread
     ports:
       - "8000:8000"
+    environment: 
+      - DEBUG=1
+      - DJANGO_ALLOWED_HOST=localhost 127.0.0.1
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
     depends_on:
       - db
+      - redis
 
   selenium-hub:
     image: selenium/hub
@@ -53,18 +59,12 @@ services:
     container_name: redis
 
   celery:
-        build: .
-        command: celery -A cralThread worker -l INFO 
-        volumes:
-            - .:/usr/src/app
-        environment:
-            - DEBUG=1
-            - DJANGO_ALLOWED_HOST=localhost 127.0.0.1 [::1]
-            - CELERY_BROKER=redis://redis:6379/0
-            - CELERY_BACKEND=redis://redis:6379/0
-        depends_on:
-            - web
-            - redis
-
+    build: .
+    command: celery -A cralThread worker -l INFO 
+    volumes:
+      - .:/cralThread
+    depends_on:
+      - web
+      - redis
 
   
