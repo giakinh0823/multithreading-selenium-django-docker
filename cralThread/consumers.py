@@ -21,21 +21,9 @@ class ProductsConsumer(AsyncWebsocketConsumer):
         data_scrap()
 
     async def receive(self, text_data): 
-        count_thread = 0 
-        for thread in threading.enumerate():
-            if thread.name == "getdata":
-                count_thread+=1
-        if(count_thread<10):
-            thread = threading.Thread(name='getdata',target=self.getDataAjax, args=[1])
-            thread.daemon = True
-            thread.start()
-            await self.send(text_data=json.dumps({
-                "Trạng thái": "Thành công! Bắt đầu lấy dữ liệu"
-            }))
-        else:
-            await self.send(text_data=json.dumps({
-                 "Trạng thái": "Lỗi! Phải đợi để tiếp tục"
-            }))
+        thread = threading.Thread(name='getdata',target=self.getDataAjax, args=[1])
+        thread.daemon = True
+        thread.start()
     
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard("product", self.channel_name)
@@ -45,5 +33,11 @@ class ProductsConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'product': event['product']
         }))
+
+    async def send_error_products(self, event):
+        await self.send(text_data=json.dumps({
+            'error': event['error']
+        }))
+        
 
 
