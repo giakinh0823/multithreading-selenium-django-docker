@@ -3,28 +3,23 @@ version: "3.9"
 services:
   db:
     image: postgres
+    container_name: postgres
     volumes:
       - ./data/db:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=testCrawl
-      - POSTGRES_USER=giakinh0823
-      - POSTGRES_PASSWORD=giakinh0823
-  web:
-    build: .
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/cralThread
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     ports:
-      - "8000:8000"
-    environment: 
-      - DEBUG=1
-      - DJANGO_ALLOWED_HOST=localhost 127.0.0.1
-      - CELERY_BROKER=redis://redis:6379/0
-      - CELERY_BACKEND=redis://redis:6379/0
-    depends_on:
-      - db
-      - redis
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
 
+    
   selenium-hub:
     image: selenium/hub
     ports:
@@ -57,14 +52,38 @@ services:
   redis:
     image: redis:alpine
     container_name: redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 10
 
   celery:
     build: .
     command: celery -A cralThread worker -l INFO 
     volumes:
-      - .:/cralThread
+      - .:/code
     depends_on:
       - web
       - redis
+      
+  web:
+    build: .
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    environment: 
+      - DEBUG=1
+      - DJANGO_ALLOWED_HOST=localhost 127.0.0.1
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy  
+    command: python manage.py runserver 0.0.0.0:8000
+    restart: on-failure
 
   

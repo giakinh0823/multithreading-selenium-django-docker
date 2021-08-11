@@ -2,12 +2,12 @@ from __future__ import absolute_import
 
 from celery import shared_task
 from .models import *
-from cralThread.celery import app
 
-@shared_task
-def getDataCelery():
+@shared_task(bind=True)
+def getDataCelery(seft):
     from .getData import data_scrap
     data_scrap()
+
 
 @shared_task
 def getProduct(request):

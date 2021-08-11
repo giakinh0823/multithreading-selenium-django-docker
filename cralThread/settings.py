@@ -107,8 +107,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'testCrawl',
-        'USER': 'giakinh0823',
-        'PASSWORD': 'giakinh0823',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
         'HOST': 'db',
         'PORT': 5432,
     }
