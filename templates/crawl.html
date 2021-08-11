@@ -10,15 +10,24 @@
 </head>
 
 <body>
-    <h1>Crawl data</h1>
-    <button id="getdata" onClick="getData()">Get data</button>
-    <button id="delete" onClick="deleteData()">Delete Data</button>
-    <button id="celery" onClick="celery()">get data celery</button>
-    <ul id="list_product">
-       {% for product in products %}
-            <li>{{product.name}}</li>
-       {% endfor %}
-    </ul>
+    <div style="display: flex;">
+        <div style="width: 100%">
+            <h1>Crawl data</h1>
+            <button id="getdata" onClick="getData()">Get data</button>
+            <button id="delete" onClick="deleteData()">Delete Data</button>
+            <button id="celery" onClick="celery()">get data celery</button>
+            <ul id="list_product">
+                {% for product in products %}
+                <li>{{product.name}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div style="width: 100%">
+            <h1>Thông báo</h1>
+            <ul id="list_noti">
+            </ul>
+        </div>
+    </div>
     <script>
         const getDataAjax = () => {
             $.ajax({
@@ -81,6 +90,28 @@
             socketGetdata.send(JSON.stringify({
                 getdata: "Start"
             }))
+        }
+
+
+
+        const noti = `ws://127.0.0.1:8000/ws/noti/`
+        const socketNoti = new WebSocket(noti)
+
+        socketNoti.onopen = function (e) {
+            console.log("open", e);
+        }
+
+        socketNoti.onmessage = function (e) {
+            console.log("message", e)
+            const data = JSON.parse(e.data);
+            document.getElementById("list_noti").innerHTML += ` <li>${data.message}</li>`
+            console.log(data)
+        }
+        socketNoti.onerror = function (e) {
+            console.log("error", e)
+        }
+        socketNoti.onclose = function (e) {
+            console.log("close", e)
         }
 
     </script>

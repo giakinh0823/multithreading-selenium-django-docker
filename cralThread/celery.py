@@ -4,7 +4,6 @@ import os
 from celery import Celery
 from celery.schedules import crontab
 
-
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cralThread.settings')
 
@@ -25,7 +24,15 @@ def debug_task(self):
 
 app.conf.beat_schedule = {
     'get-data': {
-        'task': 'crawl.tasks.getDataCelery',
+        'task': 'get_data',
         'schedule': crontab(hour=17, minute=27),
     },
 }
+
+app.conf.beat_schedule = {
+    'sen-noti': {
+        'task': 'send_noti',
+        'schedule': 30.0,
+    },
+}
+

@@ -35,3 +35,26 @@ class ProductsConsumer(AsyncWebsocketConsumer):
         
 
 
+class NotiConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        print('connect')
+        await self.accept() 
+        await self.channel_layer.group_add("noti", self.channel_name)
+        print(f"Kết nối vào {self.channel_name}")
+
+    async def receive(self, text_data): 
+        pass
+    
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard("noti", self.channel_name)
+        print(f"Thoát khỏi {self.channel_name}")
+
+    async def send_message(self, event):
+        await self.send(text_data=json.dumps({
+            'message': event['message']
+        }))
+
+    async def send_error_message(self, event):
+        await self.send(text_data=json.dumps({
+            'error': event['error']
+        }))

@@ -28,7 +28,8 @@ def delete(request):
     return JsonResponse({})
 
 def celery(request):
-    getDataCelery.delay()
+    res = getDataCelery.delay()
+    print(res.status)
     return JsonResponse({})
 
 
