@@ -16,10 +16,6 @@ class ProductsConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add("product", self.channel_name)
         print(f"Kết nối vào {self.channel_name}")
 
-
-    def getDataAjax(self,number):
-        data_scrap()
-
     async def receive(self, text_data): 
         pass
     

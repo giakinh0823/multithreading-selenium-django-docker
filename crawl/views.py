@@ -4,7 +4,9 @@ from .models import *
 from .getData import *
 from django.shortcuts import render
 import threading
-from .taks import *
+from .tasks import *
+from datetime import datetime, timedelta
+
 
 
 def crawl(request):

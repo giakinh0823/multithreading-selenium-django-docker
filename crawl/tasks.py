@@ -1,10 +1,9 @@
-from __future__ import absolute_import
-
+from __future__ import absolute_import, unicode_literals
 from celery import shared_task
 from .models import *
 
-@shared_task(bind=True)
-def getDataCelery(seft):
+@shared_task
+def getDataCelery():
     from .getData import data_scrap
     data_scrap()
 

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'crawl',
     'channels',
     'django_celery_results',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -175,7 +176,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
 CELERY_RESULT_BACKEND = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
 CELERY_TIMEZONE = "Asia/Ho_Chi_Minh"
-CELERY_TASK_TRACK_STARTED = True
+CELERY_ENABLE_UTC = True
+
+
 
 
 
