@@ -29,7 +29,8 @@ def data_scrap():
                 'product': name,
             }
         )
-        saveProduct.delay(name)
+        product = Product.objects.create(name =name)
+        product.save()
         time.sleep(2)
     driver.quit()
 

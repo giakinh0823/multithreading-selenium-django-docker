@@ -22,6 +22,7 @@ services:
     
   selenium-hub:
     image: selenium/hub
+    container_name: selenium-hub
     ports:
       - "4444:4444"
     environment:
@@ -31,6 +32,7 @@ services:
 
   chrome:
     image: selenium/node-chrome
+    container_name: chrome
     depends_on:
       - selenium-hub
     environment:
@@ -41,6 +43,7 @@ services:
 
   firefox:
     image: selenium/node-firefox
+    container_name: firefox
     depends_on:
       - selenium-hub
     environment:
@@ -60,15 +63,29 @@ services:
 
   celery:
     build: .
-    command: celery -A cralThread worker --beat --scheduler django --loglevel=info
+    container_name: celery
+    command: celery -A cralThread worker -l info
     volumes:
       - .:/code
     depends_on:
       - web
       - redis
-            
+      - db
+  
+  celery-beat:
+    build: .
+    container_name: celery-beat
+    command: celery -A cralThread beat -l info
+    volumes:
+      - .:/code
+    depends_on:
+      - web
+      - db
+      - redis
+
   web:
     build: .
+    container_name: web
     volumes:
       - .:/code
     ports:
@@ -88,6 +105,7 @@ services:
 
   flower:
     image: mher/flower
+    container_name: flower
     command: ["celery","flower", "--broker=redis://redis:6379/0", "--port=5555"]
     ports:
       - 5555:5555

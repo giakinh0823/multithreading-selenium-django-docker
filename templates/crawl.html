@@ -13,7 +13,6 @@
     <div style="display: flex;">
         <div style="width: 100%">
             <h1>Crawl data</h1>
-            <button id="getdata" onClick="getData()">Get data</button>
             <button id="delete" onClick="deleteData()">Delete Data</button>
             <button id="celery" onClick="celery()">get data celery</button>
             <ul id="list_product">
@@ -24,23 +23,13 @@
         </div>
         <div style="width: 100%">
             <h1>Thông báo</h1>
+            <button id="celery" onClick="sendnoti()">send noti</button>
             <ul id="list_noti">
             </ul>
         </div>
     </div>
     <script>
-        const getDataAjax = () => {
-            $.ajax({
-                type: "GET",
-                url: 'crawl/',
-                data: '',
-                dataType: 'json',
-                success: function (data) {
-                    console.log(data)
-                }
-            });
-        }
-
+       
         const deleteData = () => {
             $.ajax({
                 type: "GET",
@@ -58,6 +47,18 @@
             $.ajax({
                 type: "GET",
                 url: 'celery/',
+                data: '',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data)
+                }
+            });
+        }
+
+        const sendnoti = () => {
+            $.ajax({
+                type: "GET",
+                url: 'sendnoti/',
                 data: '',
                 dataType: 'json',
                 success: function (data) {

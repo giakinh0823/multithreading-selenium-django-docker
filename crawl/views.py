@@ -3,33 +3,24 @@ from  django.http import JsonResponse
 from .models import *
 from .getData import *
 from django.shortcuts import render
-import threading
 from .tasks import *
-from datetime import datetime, timedelta
-
+import redis
 
 
 def crawl(request):
-    products = getProduct(request)
+    products = Product.objects.all()
     return render(request, 'crawl.html', {"products": products})
 
-def getDataAjax(request):
-    if request.is_ajax():
-        data_scrap()
-
-def getData(request):
-    thread = threading.Thread(target=getDataAjax,args=[request])
-    thread.daemon = True
-    thread.start()
-    thread.join()
-
 def delete(request):
-    deleteProduct.delay()
+    Product.objects.all().delete()
     return JsonResponse({})
 
 def celery(request):
-    res = getDataCelery.delay()
-    print(res.status)
+    getDataCelery.delay()
+    return JsonResponse({})
+
+def sedNoti(request):
+    sendNoti.delay()
     return JsonResponse({})
 
 

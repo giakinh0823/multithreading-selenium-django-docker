@@ -5,7 +5,7 @@ app_name = 'crawl'
 
 urlpatterns = [
     path('',  views.crawl, name="home"),
-    path('crawl/',  views.getData),
     path('delete/',  views.delete),
     path('celery/',  views.celery),
+    path('sendnoti/',  views.sedNoti),
 ]

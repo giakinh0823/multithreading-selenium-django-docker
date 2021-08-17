@@ -3,30 +3,20 @@ from celery import shared_task
 from .models import *
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-
 import datetime
+from cralThread.celery import app
+import threading
 
-@shared_task(name="get_data")
-def getDataCelery():
+@shared_task(name="get_data_child")
+def getDataCeleryChild():
     from .getData import data_scrap
     data_scrap()
 
-@shared_task(name="get_product")
-def getProduct(request):
-    products = Product.objects.all()
-    return products
-
-@shared_task(name="save_product")
-def saveProduct(name):
-    product = Product.objects.create(name =name)
-    product.save()
+@shared_task(name="get_data")
+def getDataCelery():
+    getDataCeleryChild.delay()
     return True
 
-@shared_task(name="delete_product")
-def deleteProduct():
-    Product.objects.all().delete()
-    return True
-     
 
 @shared_task(name="send_noti")
 def sendNoti():
@@ -35,7 +25,7 @@ def sendNoti():
             'noti',
             {
                 'type': 'send_message',
-                'message': f"{datetime.datetime.now():%Y/%m/%d %H:%M:%S}",
+                'message': f"Now - {datetime.datetime.now():%Y/%m/%d %H:%M:%S}",
             }
         )
     return True

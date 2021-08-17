@@ -23,13 +23,10 @@ def debug_task(self):
     print('Request: {0!r}'.format(self.request))
 
 app.conf.beat_schedule = {
-    'get-data': {
+    'get-data-night': {
         'task': 'get_data',
-        'schedule': crontab(hour=17, minute=27),
+        'schedule': crontab(hour=0, minute=0),
     },
-}
-
-app.conf.beat_schedule = {
     'sen-noti': {
         'task': 'send_noti',
         'schedule': 30.0,
